@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  --color-omni-blue: #2798CC;
+  --color-omni-green: #168D3D;
+  --color-omni-navy: #193D70;
+  --color-omni-light-blue: #F2F9FC;
+  --color-omni-light-green: #F2FAF4;
+}
+
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}

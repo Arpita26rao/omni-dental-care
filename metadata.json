@@ -1,0 +1,6 @@
+{
+  "name": "Omni Dental Care - Multi-Speciality Clinic, Kota",
+  "description": "Omni Dental Care is a modern multi-speciality dental clinic in Kota, Rajasthan led by Dr. Divya Rao (B.D.S., M.D.S., Consultant Pedodontist). Personalized dental care for healthier smiles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
