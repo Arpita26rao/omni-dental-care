@@ -13,3 +13,9 @@ html {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
 }
+
+section[id],
+div[id] {
+  scroll-margin-top: 5rem;
+}
+

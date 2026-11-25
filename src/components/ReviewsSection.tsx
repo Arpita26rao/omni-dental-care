@@ -42,10 +42,10 @@ export const ReviewsSection: React.FC = () => {
               href={CLINIC_CONTACT.googleReviewsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#193D70] hover:bg-[#132f57] text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-xl shadow-xs transition-all active:scale-[0.98] shrink-0"
+              className="inline-flex items-center gap-2 bg-[#2798CC] hover:bg-[#1f80ad] text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-xl shadow-xs transition-all active:scale-[0.98] shrink-0"
             >
               <span>Read Our Google Reviews</span>
-              <ExternalLink className="w-4 h-4 text-[#2798CC]" />
+              <ExternalLink className="w-4 h-4 text-white/90" />
             </a>
           </div>
 

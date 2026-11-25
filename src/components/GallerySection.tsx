@@ -1,61 +1,97 @@
-import React, { useState } from 'react';
-import { Building2, Sparkles, MapPin, Maximize2, Shield, Heart } from 'lucide-react';
-import { ClinicBuildingVisual } from './ClinicBuildingVisual';
+import React, { useState, useEffect } from 'react';
+import { Building2, MapPin, Maximize2, Navigation, Sparkles, X } from 'lucide-react';
+import { CLINIC_BUILDING_PHOTO, CLINIC_CERTIFICATES_PHOTO } from './ClinicBuildingVisual';
+import { CLINIC_CONTACT } from '../data/treatments';
 
 interface GalleryItem {
   id: string;
   title: string;
-  category: 'exterior' | 'operatory' | 'consultation' | 'sterilization';
+  group: 'building' | 'interior';
   description: string;
   badge: string;
+  imageSrc: string;
+  alt: string;
+  isPortrait?: boolean;
 }
 
+const BUILDING_ITEMS: GalleryItem[] = [
+  {
+    id: 'building-exterior',
+    title: 'Clinic Building Exterior & Entrance',
+    group: 'building',
+    description:
+      'Actual exterior entrance of Omni Dental Care & Implant Center at Borkhera Labour Chauraha, Opposite Sanjay Gandhi School, Kota, Rajasthan.',
+    badge: 'Main Entrance & Signage',
+    imageSrc: CLINIC_BUILDING_PHOTO,
+    alt: 'Omni Dental Care clinic building exterior and entrance signage at Borkhera Labour Chauraha, Kota',
+    isPortrait: true,
+  },
+  {
+    id: 'reception-certificates',
+    title: 'Clinic Entrance Wall & Credentials',
+    group: 'building',
+    description:
+      'Inside the clinic entrance showcasing verified academic certificates, conference recognitions, and transparent consultation details.',
+    badge: 'Verified Credentials Wall',
+    imageSrc: CLINIC_CERTIFICATES_PHOTO,
+    alt: 'Omni Dental Care interior entrance wall with framed pediatric dentistry certificates and consultation information',
+    isPortrait: true,
+  },
+];
+
+const INTERIOR_ITEMS: GalleryItem[] = [
+  {
+    id: 'treatment-room',
+    title: 'Modern Treatment Operatory',
+    group: 'interior',
+    description:
+      'Ergonomic dental chair and hygienic treatment station equipped for restorative, pediatric, and general procedures.',
+    badge: 'High Hygiene Standards',
+    imageSrc: '/images/operatory.jpg',
+    alt: 'Modern dental treatment operatory room with ergonomic dental chair and overhead light',
+  },
+  {
+    id: 'consultation-zone',
+    title: 'Patient Consultation Area',
+    group: 'interior',
+    description:
+      'Calm, welcoming clinical care environment designed for comfortable family consultations and treatment planning.',
+    badge: 'Parent & Child Comfort',
+    imageSrc: '/images/consultation.jpg',
+    alt: 'Bright modern dental care suite with clean clinical seating and patient stations',
+  },
+  {
+    id: 'sterilization-station',
+    title: 'Clinical Sterilization Protocol',
+    group: 'interior',
+    description:
+      'Dedicated sterilization and infection-control practices adhering to rigorous clinical hygiene standards for patient safety.',
+    badge: '100% Sterile Protocol',
+    imageSrc: '/images/sterilization.jpg',
+    alt: 'Clinical hygiene and sterilization protocol environment',
+  },
+];
+
 export const GallerySection: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<'all' | 'exterior' | 'interior'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'building' | 'interior'>('all');
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
 
-  const galleryItems: GalleryItem[] = [
-    {
-      id: 'building-exterior',
-      title: 'Clinic Building Exterior',
-      category: 'exterior',
-      description: 'Exterior view of Omni Dental Care at Borkhera Labour Chauraha, Opposite Sanjay Gandhi School, Kota, Rajasthan.',
-      badge: 'Borkhera Landmark'
-    },
-    {
-      id: 'treatment-room',
-      title: 'Modern Treatment Operatory',
-      category: 'operatory',
-      description: 'Ergonomic dental chair and hygienic treatment station equipped for restorative, pediatric, and general procedures.',
-      badge: 'High Hygiene Standards'
-    },
-    {
-      id: 'consultation-zone',
-      title: 'Patient Consultation Area',
-      category: 'consultation',
-      description: 'Comfortable consultation space where Dr. Divya Rao explains diagnostic plans and answers parent questions.',
-      badge: 'Parent & Child Comfort'
-    },
-    {
-      id: 'sterilization-station',
-      title: 'Clinical Sterilization Protocol',
-      category: 'sterilization',
-      description: 'Dedicated sterilization zone adhering to rigorous clinical autoclave and hygiene standards for safety.',
-      badge: '100% Sterile Protocol'
-    }
-  ];
+  useEffect(() => {
+    if (!selectedPhoto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedPhoto(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selectedPhoto]);
 
-  const filteredItems = galleryItems.filter((item) => {
-    if (activeFilter === 'all') return true;
-    if (activeFilter === 'exterior') return item.category === 'exterior';
-    if (activeFilter === 'interior') return item.category !== 'exterior';
-    return true;
-  });
+  const showBuilding = activeFilter === 'all' || activeFilter === 'building';
+  const showInterior = activeFilter === 'all' || activeFilter === 'interior';
 
   return (
     <section id="gallery" className="py-16 md:py-24 bg-white border-t border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
@@ -67,7 +103,7 @@ export const GallerySection: React.FC = () => {
               Omni Dental Care Gallery
             </h2>
             <p className="mt-2 text-sm text-slate-600 max-w-xl">
-              Explore our clinic infrastructure at Borkhera, Kota. Designed for hygiene, patient comfort, and a calming pediatric-friendly experience.
+              Explore our clinic building entrance and interior care spaces at Borkhera, Kota—organized separately for easy viewing.
             </p>
           </div>
 
@@ -76,7 +112,7 @@ export const GallerySection: React.FC = () => {
             <button
               onClick={() => setActiveFilter('all')}
               type="button"
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 activeFilter === 'all'
                   ? 'bg-white text-[#193D70] shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -85,127 +121,220 @@ export const GallerySection: React.FC = () => {
               All Views
             </button>
             <button
-              onClick={() => setActiveFilter('exterior')}
+              onClick={() => setActiveFilter('building')}
               type="button"
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                activeFilter === 'exterior'
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                activeFilter === 'building'
                   ? 'bg-white text-[#193D70] shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Clinic Exterior
+              Clinic Building
             </button>
             <button
               onClick={() => setActiveFilter('interior')}
               type="button"
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 activeFilter === 'interior'
                   ? 'bg-white text-[#193D70] shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Treatment & Care
+              Clinic Interior
             </button>
           </div>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="group rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
-            >
-              {/* Image / Graphic Display */}
-              <div className="relative h-56 bg-[#F2F9FC] overflow-hidden">
-                {item.category === 'exterior' ? (
-                  <ClinicBuildingVisual className="w-full h-full rounded-none border-none shadow-none" showBadge={false} />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-[#F2F9FC] to-[#F2FAF4]">
-                    <div className="w-12 h-12 rounded-xl bg-white shadow-xs border border-slate-200 flex items-center justify-center text-[#2798CC] mb-3">
-                      {item.category === 'operatory' && <Sparkles className="w-6 h-6 text-[#168D3D]" />}
-                      {item.category === 'consultation' && <Heart className="w-6 h-6 text-[#2798CC]" />}
-                      {item.category === 'sterilization' && <Shield className="w-6 h-6 text-[#193D70]" />}
-                    </div>
-                    <p className="text-xs font-bold text-[#193D70]">{item.title}</p>
-                    <p className="text-[11px] text-slate-500 mt-1">Omni Dental Care · Kota Facility</p>
+        <div className="space-y-12">
+
+          {/* Subsection 1: Clinic Building & Entrance */}
+          {showBuilding && (
+            <div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-8 h-8 rounded-lg bg-[#F2FAF4] text-[#168D3D] flex items-center justify-center border border-[#168D3D]/20 shrink-0">
+                    <Building2 className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-bold text-[#193D70] font-heading">
+                      Clinic Building &amp; Entrance
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Actual clinic facade, signage, and interior entrance wall at Borkhera Labour Chauraha, Kota
+                    </p>
                   </div>
-                )}
+                </div>
 
-                {/* Overlay Zoom Button */}
-                <button
-                  onClick={() => setSelectedPhoto(item)}
-                  type="button"
-                  className="absolute top-3 right-3 p-1.5 rounded-lg bg-white/90 text-slate-700 opacity-0 group-hover:opacity-100 transition-opacity shadow-xs hover:bg-white"
-                  title="View details"
+                <a
+                  href={CLINIC_CONTACT.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#168D3D] hover:underline self-start sm:self-auto"
                 >
-                  <Maximize2 className="w-4 h-4 text-[#193D70]" />
-                </button>
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>Get Directions on Google Maps</span>
+                </a>
+              </div>
 
-                {/* Badge */}
-                <div className="absolute bottom-3 left-3 px-2.5 py-0.5 rounded-md bg-white/95 backdrop-blur-xs text-[10px] font-bold text-[#193D70] shadow-xs">
-                  {item.badge}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {BUILDING_ITEMS.map((item) => (
+                  <div
+                    key={item.id}
+                    className="group rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col"
+                  >
+                    <div className="relative aspect-[3/4] max-h-[460px] w-full bg-slate-100 overflow-hidden">
+                      <img
+                        src={item.imageSrc}
+                        alt={item.alt}
+                        className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <button
+                        onClick={() => setSelectedPhoto(item)}
+                        type="button"
+                        className="absolute top-3 right-3 p-2 rounded-lg bg-white/95 text-[#193D70] shadow-xs hover:bg-white transition-colors cursor-pointer"
+                        title="View full photograph"
+                        aria-label={`View ${item.title}`}
+                      >
+                        <Maximize2 className="w-4 h-4" />
+                      </button>
+                      <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-white/95 backdrop-blur-xs text-[10px] font-bold text-[#193D70] shadow-xs">
+                        {item.badge}
+                      </div>
+                    </div>
+
+                    <div className="p-4 sm:p-5 text-left flex-1">
+                      <h4 className="text-base font-bold text-[#193D70]">{item.title}</h4>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Subsection 2: Clinic Interior & Care Spaces */}
+          {showInterior && (
+            <div>
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-8 h-8 rounded-lg bg-[#F2F9FC] text-[#2798CC] flex items-center justify-center border border-[#2798CC]/20 shrink-0">
+                    <Sparkles className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-bold text-[#193D70] font-heading">
+                      Clinic Interior &amp; Care Spaces
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Treatment operatory, patient consultation, and clinical hygiene standards
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Card Footer Text */}
-              <div className="p-4 text-left">
-                <h4 className="text-sm font-bold text-[#193D70]">{item.title}</h4>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">{item.description}</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {INTERIOR_ITEMS.map((item) => (
+                  <div
+                    key={item.id}
+                    className="group rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col"
+                  >
+                    <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+                      <img
+                        src={item.imageSrc}
+                        alt={item.alt}
+                        className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
+                      />
+
+                      <button
+                        onClick={() => setSelectedPhoto(item)}
+                        type="button"
+                        className="absolute top-3 right-3 p-1.5 rounded-lg bg-white/90 text-slate-700 opacity-0 group-hover:opacity-100 transition-opacity shadow-xs hover:bg-white cursor-pointer"
+                        title="View larger photo"
+                        aria-label={`View ${item.title}`}
+                      >
+                        <Maximize2 className="w-4 h-4 text-[#193D70]" />
+                      </button>
+
+                      <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-white/95 backdrop-blur-xs text-[10px] font-bold text-[#193D70] shadow-xs">
+                        {item.badge}
+                      </div>
+                    </div>
+
+                    <div className="p-4 sm:p-5 text-left flex-1">
+                      <h4 className="text-sm font-bold text-[#193D70]">{item.title}</h4>
+                      <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          )}
+
         </div>
 
-        {/* Note about real clinic photos */}
-        <div className="mt-8 p-4 rounded-xl bg-[#F2F9FC] border border-[#2798CC]/20 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 gap-3">
+        {/* Footnote about clinic photos */}
+        <div className="mt-10 p-4 rounded-xl bg-[#F2F9FC] border border-[#2798CC]/20 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 gap-3">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-[#2798CC] shrink-0" />
             <span>
-              Real clinic facility located at <strong>Borkhera Labour Chauraha, Opposite Sanjay Gandhi School, Kota</strong>.
+              Actual clinic facility located at <strong>Borkhera Labour Chauraha, Opposite Sanjay Gandhi School, Kota</strong>.
             </span>
           </div>
           <span className="text-[11px] text-slate-500">
-            Additional clinic photos are verified directly by clinic administration.
+            Representative clinical treatment room views shown for patient reference.
           </span>
         </div>
 
         {/* Lightbox / Details Modal */}
         {selectedPhoto && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/75 backdrop-blur-xs animate-fadeIn"
             onClick={() => setSelectedPhoto(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedPhoto.title}
           >
             <div
-              className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-100 text-left"
+              className="bg-white rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl border border-slate-100 text-left max-h-[92vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
                   <span className="text-xs font-semibold text-[#168D3D]">{selectedPhoto.badge}</span>
                   <h3 className="text-xl font-bold text-[#193D70] font-heading">{selectedPhoto.title}</h3>
                 </div>
                 <button
                   onClick={() => setSelectedPhoto(null)}
-                  className="p-1 rounded-md text-slate-400 hover:text-slate-700"
+                  type="button"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                  aria-label="Close preview"
                 >
-                  ✕
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="rounded-xl overflow-hidden mb-4 bg-slate-100 min-h-[260px] flex items-center justify-center">
-                {selectedPhoto.category === 'exterior' ? (
-                  <ClinicBuildingVisual className="w-full h-64 border-none shadow-none" />
-                ) : (
-                  <div className="p-8 text-center">
-                    <Sparkles className="w-10 h-10 text-[#168D3D] mx-auto mb-2" />
-                    <p className="text-sm font-semibold text-[#193D70]">{selectedPhoto.title}</p>
-                    <p className="text-xs text-slate-500 mt-1">Omni Dental Care Kota Clinical Facility</p>
-                  </div>
-                )}
+              <div className="rounded-xl overflow-hidden mb-4 bg-slate-100 flex items-center justify-center">
+                <img
+                  src={selectedPhoto.imageSrc}
+                  alt={selectedPhoto.alt}
+                  className={
+                    selectedPhoto.isPortrait
+                      ? 'max-h-[68vh] w-auto mx-auto object-contain rounded-xl'
+                      : 'w-full max-h-[65vh] object-cover object-center rounded-xl'
+                  }
+                />
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{selectedPhoto.description}</p>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                {selectedPhoto.description}
+              </p>
             </div>
           </div>
         )}
@@ -214,3 +343,5 @@ export const GallerySection: React.FC = () => {
     </section>
   );
 };
+
+

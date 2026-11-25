@@ -26,13 +26,14 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
     patientName: '',
     phoneNumber: '',
     preferredDate: '',
-    preferredTime: 'Morning (10:00 AM - 1:00 PM)',
+    preferredTime: 'Morning (10:00 AM - 2:00 PM)',
     treatment: initialTreatment || TREATMENTS[0].title,
     message: ''
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof AppointmentFormData, string>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [preparedWhatsappUrl, setPreparedWhatsappUrl] = useState<string>('');
 
   useEffect(() => {
     if (initialTreatment) {
@@ -40,8 +41,11 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
     }
   }, [initialTreatment]);
 
-  // Set minimum date to today
-  const today = new Date().toISOString().split('T')[0];
+  // Compute local calendar date (YYYY-MM-DD) accurately regardless of UTC offset
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+    now.getDate()
+  ).padStart(2, '0')}`;
 
   const validate = () => {
     const newErrors: Partial<Record<keyof AppointmentFormData, string>> = {};
@@ -90,26 +94,32 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
       `*Preferred Time Slot:* ${formData.preferredTime}`,
       formData.message.trim() ? `*Additional Notes:* ${formData.message.trim()}` : null,
       `---------------------------------------`,
-      `_Sent from omnidentalcare.com_`
+      `_Sent via Omni Dental Care Website_`
     ].filter(Boolean);
 
     const fullMessage = messageLines.join('\n');
     const encodedMessage = encodeURIComponent(fullMessage);
-    const whatsappUrl = `https://wa.me/918528043685?text=${encodedMessage}`;
+    const whatsappUrl = `${CLINIC_CONTACT.whatsappUrl}?text=${encodedMessage}`;
 
-    // Mark as submitted state in UI
+    setPreparedWhatsappUrl(whatsappUrl);
     setSubmitted(true);
 
-    // Open WhatsApp
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    // Trigger direct link navigation in a new tab (safe fallback link also displayed below)
+    const tempLink = document.createElement('a');
+    tempLink.href = whatsappUrl;
+    tempLink.target = '_blank';
+    tempLink.rel = 'noopener noreferrer';
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    document.body.removeChild(tempLink);
   };
 
   return (
-    <section id="appointment" className="py-16 md:py-24 bg-white scroll-mt-12">
+    <section id="appointment" className="py-16 md:py-24 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F2F9FC] text-[#2798CC] rounded-full text-xs font-semibold mb-2 border border-[#2798CC]/20">
             <Calendar className="w-3.5 h-3.5" />
             <span>Fast & Convenient Booking</span>
@@ -118,45 +128,53 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
             Book an Appointment
           </h2>
           <p className="mt-2 text-sm sm:text-base text-slate-600">
-            Submit your appointment request below or scan the WhatsApp QR code to consult with Dr. Divya Rao and our dental team.
+            Complete the form below or scan the WhatsApp QR code to request a visit.
           </p>
         </div>
 
         {/* 2-Column Layout: Form on Left, QR Code on Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Column: Form */}
           <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8 md:p-10 relative">
             <div className="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-[#193D70]">
-                  Appointment Request Form
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Takes less than a minute. Direct WhatsApp confirmation with our clinic staff.
-                </p>
-              </div>
+              <h3 className="text-xl font-bold text-[#193D70]">
+                Appointment Request Form
+              </h3>
               <Sparkles className="w-5 h-5 text-[#168D3D]" />
             </div>
 
             {submitted && (
-              <div className="mb-6 p-4 rounded-xl bg-[#F2FAF4] border border-[#168D3D]/30 text-left">
+              <div className="mb-6 p-4 rounded-xl bg-[#F2FAF4] border border-[#168D3D]/30 text-left" role="status">
                 <div className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-5 h-5 text-[#168D3D] shrink-0 mt-0.5" />
-                  <div>
+                  <div className="flex-1">
                     <h4 className="text-sm font-bold text-[#193D70]">
                       Request Prepared for WhatsApp!
                     </h4>
                     <p className="text-xs text-slate-600 mt-1">
-                      Your appointment details have been prepared. A WhatsApp conversation should have opened to send the details directly to Omni Dental Care (+91 85280 43685).
+                      Your appointment details are ready to send directly to Omni Dental Care ({CLINIC_CONTACT.phoneFormatted}). If WhatsApp did not open automatically, tap the button below.
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => setSubmitted(false)}
-                      className="mt-2 text-xs font-semibold text-[#168D3D] underline"
-                    >
-                      Fill another request
-                    </button>
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      {preparedWhatsappUrl && (
+                        <a
+                          href={preparedWhatsappUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 bg-[#168D3D] hover:bg-[#127733] text-white text-xs font-semibold px-3.5 py-2 rounded-lg shadow-2xs transition-colors"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Open WhatsApp Chat</span>
+                        </a>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setSubmitted(false)}
+                        className="text-xs font-semibold text-[#168D3D] underline cursor-pointer"
+                      >
+                        Edit / New request
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -165,7 +183,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
             <form onSubmit={handleSubmit} noValidate className="space-y-4 text-left">
               {/* Patient Name */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label
+                  htmlFor="appointment-patient-name"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                >
                   Patient Full Name <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
@@ -173,7 +194,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     <User className="w-4 h-4" />
                   </div>
                   <input
+                    id="appointment-patient-name"
                     type="text"
+                    autoComplete="name"
+                    aria-invalid={Boolean(errors.patientName)}
                     value={formData.patientName}
                     onChange={(e) => {
                       setFormData({ ...formData, patientName: e.target.value });
@@ -198,7 +222,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
               {/* Phone Number */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label
+                  htmlFor="appointment-phone"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                >
                   Phone Number (WhatsApp) <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
@@ -206,7 +233,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     <Phone className="w-4 h-4" />
                   </div>
                   <input
+                    id="appointment-phone"
                     type="tel"
+                    autoComplete="tel"
+                    aria-invalid={Boolean(errors.phoneNumber)}
                     value={formData.phoneNumber}
                     onChange={(e) => {
                       setFormData({ ...formData, phoneNumber: e.target.value });
@@ -232,10 +262,14 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
               {/* Treatment of Interest */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label
+                  htmlFor="appointment-treatment"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                >
                   Treatment of Interest <span className="text-rose-500">*</span>
                 </label>
                 <select
+                  id="appointment-treatment"
                   value={formData.treatment}
                   onChange={(e) => setFormData({ ...formData, treatment: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white focus:outline-none focus:border-[#2798CC] focus:ring-1 focus:ring-[#2798CC]"
@@ -254,7 +288,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Preferred Date */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label
+                    htmlFor="appointment-date"
+                    className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                  >
                     Preferred Date <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -262,8 +299,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
                       <Calendar className="w-4 h-4" />
                     </div>
                     <input
+                      id="appointment-date"
                       type="date"
                       min={today}
+                      aria-invalid={Boolean(errors.preferredDate)}
                       value={formData.preferredDate}
                       onChange={(e) => {
                         setFormData({ ...formData, preferredDate: e.target.value });
@@ -284,7 +323,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
                 {/* Preferred Time */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label
+                    htmlFor="appointment-time"
+                    className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                  >
                     Preferred Time Slot
                   </label>
                   <div className="relative">
@@ -292,13 +334,13 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
                       <Clock className="w-4 h-4" />
                     </div>
                     <select
+                      id="appointment-time"
                       value={formData.preferredTime}
                       onChange={(e) => setFormData({ ...formData, preferredTime: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white focus:outline-none focus:border-[#2798CC]"
                     >
-                      <option value="Morning (10:00 AM - 1:00 PM)">Morning (10:00 AM - 1:00 PM)</option>
-                      <option value="Afternoon (1:00 PM - 3:00 PM)">Afternoon (1:00 PM - 3:00 PM)</option>
-                      <option value="Evening (5:00 PM - 8:30 PM)">Evening (5:00 PM - 8:30 PM)</option>
+                      <option value="Morning (10:00 AM - 2:00 PM)">Morning (10:00 AM - 2:00 PM)</option>
+                      <option value="Evening (5:00 PM - 8:00 PM)">Evening (5:00 PM - 8:00 PM)</option>
                     </select>
                   </div>
                 </div>
@@ -306,7 +348,10 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
               {/* Optional Message */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label
+                  htmlFor="appointment-message"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                >
                   Optional Message / Dental Symptoms
                 </label>
                 <div className="relative">
@@ -314,6 +359,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     <MessageSquare className="w-4 h-4" />
                   </div>
                   <textarea
+                    id="appointment-message"
                     rows={3}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -342,28 +388,22 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = ({
             </form>
           </div>
 
-          {/* Right Column: QR Code Appointment Booking (Explicit Requirement) */}
-          <div className="lg:col-span-5 flex flex-col gap-6">
+          {/* Right Column: QR Code Appointment Booking */}
+          <div className="lg:col-span-5 flex flex-col gap-4">
             <QRCodeBooking />
 
-            {/* Quick Contact summary */}
-            <div className="p-5 rounded-2xl bg-[#F2FAF4] border border-[#168D3D]/20 text-left">
-              <h4 className="text-sm font-bold text-[#193D70]">
-                Prefer to Call Directly?
-              </h4>
-              <p className="text-xs text-slate-600 mt-1">
-                You can reach Dr. Divya Rao and reception immediately during clinic consultation hours.
-              </p>
-              <div className="mt-3 flex items-center gap-3">
-                <a
-                  href={`tel:+91${CLINIC_CONTACT.phone}`}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-xs font-bold text-[#193D70] shadow-2xs hover:bg-slate-50"
-                >
-                  <Phone className="w-3.5 h-3.5 text-[#2798CC]" />
-                  <span>Call 8528043685</span>
-                </a>
-                <span className="text-xs text-slate-500">Borkhera, Kota</span>
-              </div>
+            {/* Compact direct call option */}
+            <div className="px-5 py-3.5 rounded-2xl bg-[#F2F9FC] border border-[#2798CC]/20 flex items-center justify-between gap-3 text-left">
+              <span className="text-xs font-semibold text-[#193D70]">
+                Need to call reception directly?
+              </span>
+              <a
+                href={`tel:+91${CLINIC_CONTACT.phone}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-[#193D70] shadow-2xs hover:border-[#2798CC]/40 hover:text-[#2798CC] transition-colors shrink-0"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#2798CC]" />
+                <span>{CLINIC_CONTACT.phone}</span>
+              </a>
             </div>
           </div>
 

@@ -5,6 +5,8 @@ export interface Treatment {
   description: string;
   benefits: string[];
   icon: string;
+  imageSrc: string;
+  fallbackImageSrc: string;
   isPediatric?: boolean;
 }
 

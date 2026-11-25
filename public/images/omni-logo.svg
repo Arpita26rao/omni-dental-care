@@ -1,0 +1,51 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600' width='600' height='600'>
+  <defs>
+    <style>
+      .cls-blue { fill: #2798CC; }
+      .cls-green { fill: #168D3D; }
+      .cls-navy { fill: #193D70; }
+      .cls-white { fill: #FFFFFF; }
+      .cls-txt { font-family: 'Arial Black', Impact, sans-serif; font-weight: 900; fill: #FFFFFF; }
+    </style>
+  </defs>
+
+  <!-- Outer Two-Tone Ring -->
+  <!-- Green Arc (Top-Right) -->
+  <path d='M 120 180 A 240 240 0 0 1 540 290' fill='none' stroke='#168D3D' stroke-width='20' stroke-linecap='round' />
+  
+  <!-- Navy Arc (Bottom-Left) -->
+  <path d='M 90 320 A 240 240 0 0 0 510 440' fill='none' stroke='#193D70' stroke-width='20' stroke-linecap='round' />
+
+  <!-- Shield with Healthcare Cross at Top Right -->
+  <g transform='translate(330, 110) scale(1.1)'>
+    <path d='M 40 0 C 60 5, 80 5, 80 25 C 80 55, 40 75, 40 75 C 40 75, 0 55, 0 25 C 0 5, 20 5, 40 0 Z' fill='#168D3D' />
+    <!-- White Cross -->
+    <rect x='34' y='18' width='12' height='36' rx='2' fill='#FFFFFF' />
+    <rect x='22' y='30' width='36' height='12' rx='2' fill='#FFFFFF' />
+  </g>
+
+  <!-- Tooth Base & Shadow (Green Left Root) -->
+  <path d='M 175 255 C 150 290, 160 380, 230 460 C 235 410, 250 370, 275 330 C 240 320, 200 290, 175 255 Z' fill='#127231' />
+  <path d='M 180 255 C 190 330, 220 420, 245 470 C 280 430, 290 380, 295 340 C 230 335, 195 285, 180 255 Z' fill='#168D3D' />
+
+  <!-- Main Tooth Body (Vibrant Sky Blue) -->
+  <path d='M 185 195 C 190 170, 230 160, 260 190 C 290 195, 330 175, 360 200 C 400 240, 430 320, 420 410 C 405 450, 370 470, 345 410 C 330 360, 310 320, 270 330 C 230 340, 210 420, 230 460 C 160 380, 150 280, 185 195 Z' fill='#2798CC' />
+
+  <!-- Diagonal 'OMNI' Letters inside Tooth Body -->
+  <g transform='rotate(18, 280, 260)'>
+    <!-- 'O' Double-ring Circle Badge -->
+    <g transform='translate(170, 185)'>
+      <circle cx='28' cy='28' r='26' fill='none' stroke='#FFFFFF' stroke-width='6' />
+      <circle cx='28' cy='28' r='14' fill='none' stroke='#FFFFFF' stroke-width='5' />
+    </g>
+
+    <!-- 'M' -->
+    <text x='245' y='230' class='cls-txt' font-size='56' letter-spacing='1'>M</text>
+
+    <!-- 'N' -->
+    <text x='310' y='265' class='cls-txt' font-size='56' letter-spacing='1'>N</text>
+
+    <!-- 'I' Outlined -->
+    <text x='375' y='298' class='cls-txt' font-size='54' fill='none' stroke='#FFFFFF' stroke-width='4'>I</text>
+  </g>
+</svg>

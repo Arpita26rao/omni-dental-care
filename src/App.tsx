@@ -13,16 +13,13 @@ import { DoctorProfile } from './components/DoctorProfile';
 import { GallerySection } from './components/GallerySection';
 import { ReviewsSection } from './components/ReviewsSection';
 import { AppointmentForm } from './components/AppointmentForm';
-import { LocationMap } from './components/LocationMap';
 import { ContactSection } from './components/ContactSection';
 import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { AssetUploadModal } from './components/AssetUploadModal';
 
 export default function App() {
   const [selectedTreatmentForBooking, setSelectedTreatmentForBooking] = useState<string>('');
-  const [isAssetModalOpen, setIsAssetModalOpen] = useState<boolean>(false);
 
   const handleBookAppointmentClick = (treatmentTitle?: string) => {
     if (treatmentTitle) {
@@ -46,7 +43,6 @@ export default function App() {
       {/* Top Header / Sticky Navbar */}
       <Navbar
         onBookAppointmentClick={() => handleBookAppointmentClick()}
-        onManageAssetsClick={() => setIsAssetModalOpen(true)}
       />
 
       {/* Main Content Sections */}
@@ -60,7 +56,7 @@ export default function App() {
         {/* B. Verified Trust Section */}
         <TrustSection />
 
-        {/* C. About The Clinic */}
+        {/* C. Our Clinic / About Section */}
         <AboutSection onBookAppointmentClick={() => handleBookAppointmentClick()} />
 
         {/* D. Dental Treatments (8 Treatments) */}
@@ -68,7 +64,7 @@ export default function App() {
           onSelectTreatmentForBooking={(title) => handleBookAppointmentClick(title)}
         />
 
-        {/* E. Meet Our Doctor (Dr. Divya Rao, Pedodontist) */}
+        {/* E. Our Doctors (Dr. Divya Rao, Pedodontist) */}
         <DoctorProfile onBookAppointmentClick={() => handleBookAppointmentClick()} />
 
         {/* F. Clinic Gallery */}
@@ -77,33 +73,24 @@ export default function App() {
         {/* G. Patient Reviews */}
         <ReviewsSection />
 
-        {/* H. Appointment Booking (Form + QR Code Booking) */}
+        {/* 7. Book Appointment */}
         <AppointmentForm initialTreatment={selectedTreatmentForBooking} />
 
-        {/* I. Location & Google Maps */}
-        <LocationMap />
-
-        {/* J. Contact Section (with QR Code Booking) */}
+        {/* 8. Location & Contact (with Google Maps) */}
         <ContactSection />
 
-        {/* K. FAQ Section */}
+        {/* 9. FAQ */}
         <FAQSection />
       </main>
 
       {/* L. Footer */}
       <Footer
         onBookAppointmentClick={() => handleBookAppointmentClick()}
-        onManageAssetsClick={() => setIsAssetModalOpen(true)}
       />
 
       {/* Floating WhatsApp Quick Action Button */}
       <FloatingWhatsApp />
-
-      {/* Clinic Asset & Photograph Manager Modal */}
-      <AssetUploadModal
-        isOpen={isAssetModalOpen}
-        onClose={() => setIsAssetModalOpen(false)}
-      />
     </div>
   );
 }
+

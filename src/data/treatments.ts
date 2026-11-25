@@ -31,6 +31,8 @@ export const TREATMENTS: Treatment[] = [
       'Pit & fissure sealants and fluoride protection'
     ],
     icon: 'Baby',
+    imageSrc: '/images/treatments/pediatric-dentistry.jpg',
+    fallbackImageSrc: '/images/operatory.jpg',
     isPediatric: true
   },
   {
@@ -44,7 +46,9 @@ export const TREATMENTS: Treatment[] = [
       'Precision rotary instrumentation for comfort',
       'Finished with durable protective dental crowns'
     ],
-    icon: 'Activity'
+    icon: 'Activity',
+    imageSrc: '/images/treatments/root-canal.jpg',
+    fallbackImageSrc: '/images/operatory.jpg'
   },
   {
     id: 'dental-implants',
@@ -57,7 +61,9 @@ export const TREATMENTS: Treatment[] = [
       'Looks, feels, and functions like natural teeth',
       'No trimming or alteration of adjacent teeth'
     ],
-    icon: 'ShieldCheck'
+    icon: 'ShieldCheck',
+    imageSrc: '/images/treatments/dental-implants.jpg',
+    fallbackImageSrc: '/images/operatory.jpg'
   },
   {
     id: 'braces-orthodontics',
@@ -70,7 +76,9 @@ export const TREATMENTS: Treatment[] = [
       'Corrects overbites, underbites, and crowded teeth',
       'Improves bite function and ease of cleaning'
     ],
-    icon: 'Smile'
+    icon: 'Smile',
+    imageSrc: '/images/treatments/braces-orthodontics.jpg',
+    fallbackImageSrc: '/images/operatory.jpg'
   },
   {
     id: 'teeth-whitening',
@@ -83,7 +91,9 @@ export const TREATMENTS: Treatment[] = [
       'Removes deep surface and lifestyle discolorations',
       'Customized post-whitening sensitivity protection'
     ],
-    icon: 'Sparkles'
+    icon: 'Sparkles',
+    imageSrc: '/images/treatments/teeth-whitening.jpg',
+    fallbackImageSrc: '/images/operatory.jpg'
   },
   {
     id: 'preventive-dental-care',
@@ -96,7 +106,9 @@ export const TREATMENTS: Treatment[] = [
       'Personalized brushing & flossing technique guidance',
       'Preventive fluoride applications for high-decay risk'
     ],
-    icon: 'Shield'
+    icon: 'Shield',
+    imageSrc: '/images/treatments/preventive-care.jpg',
+    fallbackImageSrc: '/images/operatory.jpg'
   },
   {
     id: 'tooth-extraction',
@@ -109,7 +121,9 @@ export const TREATMENTS: Treatment[] = [
       'Clear, step-by-step post-operative care advice',
       'Timely consultation for future tooth replacement'
     ],
-    icon: 'Scissors'
+    icon: 'Scissors',
+    imageSrc: '/images/treatments/tooth-extraction.jpg',
+    fallbackImageSrc: '/images/operatory.jpg'
   },
   {
     id: 'general-dental-consultation',
@@ -122,6 +136,8 @@ export const TREATMENTS: Treatment[] = [
       'Second opinions on complex dental concerns',
       'Transparent explanations with zero pressure'
     ],
-    icon: 'FileText'
+    icon: 'FileText',
+    imageSrc: '/images/treatments/general-consultation.jpg',
+    fallbackImageSrc: '/images/operatory.jpg'
   }
 ];

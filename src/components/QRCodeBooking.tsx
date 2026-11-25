@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { Download, MessageCircle, ExternalLink, Check, Smartphone, Printer } from 'lucide-react';
+import { Download, MessageCircle, ExternalLink, Check, Printer } from 'lucide-react';
 import { CLINIC_CONTACT } from '../data/treatments';
 
 interface QRCodeBookingProps {
@@ -86,15 +86,11 @@ export const QRCodeBooking: React.FC<QRCodeBookingProps> = ({
       <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#2798CC] via-[#168D3D] to-[#193D70]" />
 
       {/* Heading & Instructions */}
-      <div className="mb-4">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F2F9FC] text-[#193D70] rounded-full text-xs font-semibold mb-2 border border-[#2798CC]/20">
-          <Smartphone className="w-3.5 h-3.5 text-[#2798CC]" />
-          <span>Instant WhatsApp Connect</span>
-        </div>
+      <div className="mb-3">
         <h3 className="text-xl font-bold text-[#193D70] font-heading">
           Scan to Book Your Appointment
         </h3>
-        <p className="text-xs md:text-sm text-slate-600 mt-1 max-w-sm">
+        <p className="text-xs md:text-sm text-slate-600 mt-1 max-w-xs mx-auto">
           Scan this QR code with your phone camera to contact our clinic on WhatsApp.
         </p>
       </div>
@@ -155,11 +151,9 @@ export const QRCodeBooking: React.FC<QRCodeBookingProps> = ({
         </button>
       </div>
 
-      {/* Verified note */}
+      {/* Concise confirmation note */}
       <p className="text-[11px] text-slate-500 mt-3">
-        Clinic WhatsApp: <span className="font-semibold text-slate-700">+91 85280 43685</span>
-        <br />
-        <span className="text-[10px] text-slate-400">Slots confirmed directly by clinic staff</span>
+        <span className="font-semibold text-slate-700">+91 85280 43685</span> · Confirmed by clinic staff
       </p>
     </div>
   );

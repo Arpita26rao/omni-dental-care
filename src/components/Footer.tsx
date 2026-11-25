@@ -87,6 +87,9 @@ export const Footer: React.FC<FooterProps> = ({
                 <a href="#reviews" className="hover:text-white transition-colors">Reviews</a>
               </li>
               <li>
+                <a href="#contact" className="hover:text-white transition-colors">Location & Contact</a>
+              </li>
+              <li>
                 <a href="#faq" className="hover:text-white transition-colors">FAQs</a>
               </li>
               {onManageAssetsClick && (
